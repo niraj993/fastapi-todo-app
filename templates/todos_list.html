@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📝 Todo List</h2>
+        <a href="/todos/" class="btn btn-primary">+ Add Task</a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due</th>
+                    <th>Status</th>
+                    <th width="140">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                <tr>
+                    <td class="fw-semibold">{{ todo.title }}</td>
+                    <td class="text-muted">{{ todo.description or "—" }}</td>
+                    <td>{{ todo.due_date or "No date" }}</td>
+                    <td>
+                        <span class="badge 
+                        {% if todo.status == 'completed' %}bg-success
+                        {% elif todo.status == 'in_progress' %}bg-warning text-dark
+                        {% elif todo.status == 'cancelled' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                            {{ todo.status.replace('_',' ').title() }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="/todos/{{ todo.id }}/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+
+                        <form action="/todos/{{ todo.id }}/delete" method="post" class="d-inline">
+                            <button class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Delete this task?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        No todos found 🚀
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

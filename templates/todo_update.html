@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4">
+
+            <h3 class="fw-bold mb-4 text-center">✏ Update Todo</h3>
+
+            <form method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input name="title" class="form-control" required
+                           value="{{ todo.title }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control">{{ todo.description }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" name="due_date" class="form-control"
+                           value="{{ todo.due_date }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in ['pending','in_progress','completed','cancelled'] %}
+                        <option value="{{ s }}"
+                                {% if todo.status == s %}selected{% endif %}>
+                            {{ s.replace('_',' ').title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                    <button class="btn btn-primary">Update</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
