@@ -10,6 +10,8 @@ from configs.constants import MESSAGE,STATUS_CODE,TODO_ID,TODOS_DATA
 from schemas.todo_response_schema import TodoItemResponse
 from utils.db_utils import rows_to_dicts
 
+
+
 class TodoController:
 
     @staticmethod
@@ -42,6 +44,9 @@ class TodoController:
             if not todo:
                 raise HTTPException(status_code=404, detail=TODO_NOT_FOUND_MESSAGE.format(todo_id=todo_id))
             return JSONResponse(status_code=200, content={STATUS_CODE:200,MESSAGE:TODO_FETCHED_MESSAGE,TODOS_DATA: rows_to_dicts(todo) })
+        
+        except HTTPException:
+            raise
         except Exception as e:
             raise HTTPException(status_code=500, detail=INTERNAL_SERVER_ERROR_MESSAGE.format(error=e))
 
@@ -49,10 +54,16 @@ class TodoController:
     @staticmethod
     def update_todo(todo_id: int, payload: UpdateTodoSchema, connector: DatabaseConnector) -> JSONResponse:
         try:
+            todo: Optional[Dict] = TodoModel.get_todo_by_id(todo_id=todo_id, connector=connector)
+            if not todo:
+                raise HTTPException(status_code=404, detail=TODO_NOT_FOUND_MESSAGE.format(todo_id=todo_id))
             updated_rows = TodoModel.update_todo(todo_id=todo_id, payload=payload, connector=connector)
-            if updated_rows == 0:
+            if updated_rows:
                 raise HTTPException(status_code=404, detail=TODO_NOT_FOUND_MESSAGE.format(todo_id=todo_id))
             return JSONResponse(status_code=200, content={STATUS_CODE:200,MESSAGE: TODO_UPDATED_MESSAGE})
+        except HTTPException:
+            raise
+        
         except Exception as e:
             raise HTTPException(status_code=500, detail=INTERNAL_SERVER_ERROR_MESSAGE.format(error=e))
 

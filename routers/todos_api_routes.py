@@ -34,7 +34,7 @@ def get_all_todos(
 
 
 @router.get(path=TODO_BY_ID_ENDPOINT, response_model=TodoListResponse)
-def get_todo(
+def get_todo_by_id(
     todo_id: int,
     connector: DatabaseConnector = Depends(get_sqlite_db_connection)
 ) -> JSONResponse:
